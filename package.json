@@ -1,6 +1,16 @@
 {
   "name": "nuqs-svelte-monorepo",
+  "version": "0.0.0",
   "private": true,
+  "license": "MIT",
+  "author": {
+    "name": "Isaque Weskerson",
+    "email": "me@rtrampox.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rtrampox/nuqs-svelte"
+  },
   "workspaces": [
     "apps/*",
     "packages/*"
@@ -18,7 +28,8 @@
   "devDependencies": {
     "turbo": "^2.4.2",
     "husky": "^9.1.7",
-    "lint-staged": "^15.5.0"
+    "lint-staged": "^15.5.0",
+    "semantic-release": "^24.2.3"
   },
   "lint-staged": {
     "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": []
