@@ -17,6 +17,12 @@ importers:
       prettier:
         specifier: ^3.4.2
         version: 3.5.3
+      prettier-plugin-svelte:
+        specifier: ^3.3.3
+        version: 3.3.3(prettier@3.5.3)(svelte@5.28.6)
+      prettier-plugin-tailwindcss:
+        specifier: ^0.6.11
+        version: 0.6.11(prettier-plugin-svelte@3.3.3(prettier@3.5.3)(svelte@5.28.6))(prettier@3.5.3)
       semantic-release:
         specifier: ^24.2.3
         version: 24.2.3(typescript@5.8.3)
