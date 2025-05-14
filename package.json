@@ -12,7 +12,6 @@
     "url": "https://github.com/rtrampox/nuqs-svelte"
   },
   "workspaces": [
-    "apps/*",
     "packages/*"
   ],
   "scripts": {
@@ -22,14 +21,18 @@
     "check-types": "turbo check-types",
     "dev:native": "turbo -F native dev",
     "dev:web": "turbo -F web dev",
-    "dev:server": "turbo -F server dev"
+    "dev:server": "turbo -F server dev",
+    "sherif": "^1.5.0",
+    "lint": "pnpm run -w --parallel --stream '/^lint:/'",
+    "lint:prettier": "prettier --check ./packages/nuqs-svelte/src/**/*.{ts,svelte}",
+    "lint:sherif": "sherif"
   },
-  "dependencies": {},
   "devDependencies": {
-    "turbo": "^2.4.2",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.0",
-    "semantic-release": "^24.2.3"
+    "semantic-release": "^24.2.3",
+    "prettier": "^3.4.2",
+    "turbo": "^2.4.2"
   },
   "lint-staged": {
     "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": []
