@@ -4,7 +4,9 @@
 
   const queries = useQueryStates({
     q: parseAsString.withDefault("string-value"),
-    switch: parseAsBoolean.withDefault(false),
+    switch: parseAsBoolean.withDefault(false).withOptions({
+      history: "push"
+    }),
   });
 </script>
 

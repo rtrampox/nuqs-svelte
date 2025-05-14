@@ -2,7 +2,6 @@
 /* eslint-disable prefer-const */
 import { useAdapter } from './adapters/index.svelte';
 import { debug } from './debug';
-import { effectDeps } from './effect.svelte';
 import type { Parser } from './parsers';
 import { emitter, type CrossHookSyncPayload } from './sync';
 import type { Nullable, Options, UrlKeys } from './types';
@@ -112,12 +111,34 @@ export function useQueryStates<KeyMap extends UseQueryStatesKeysMap>(
     Object.fromEntries(Object.keys(keyMap).map((key) => [key, keyMap[key]!.defaultValue ?? null])),
   ) as Values<KeyMap>;
 
-  let internalState = $state<V>(parseMap(keyMap, urlKeys, initialSearchParams).state);
+  let internalState = $derived<V>(parseMap(keyMap, urlKeys, initialSearchParams).state);
 
   let queryRef = $state<Record<string, string | null>>({});
-  let stateRef = $state(internalState);
+  let stateRef = $derived(internalState);
 
-  if (Object.keys(queryRef).join('&') !== Object.values(resolvedUrlKeys).join('&')) {
+  $effect(() => {
+    if (Object.keys(queryRef).join('&') !== Object.values(resolvedUrlKeys).join('&')) {
+      const { state, hasChanged } = parseMap(
+        keyMap,
+        urlKeys,
+        initialSearchParams,
+        queryRef,
+        stateRef,
+      );
+      if (hasChanged) {
+        stateRef = state;
+        internalState = state;
+      }
+      queryRef = Object.fromEntries(
+        Object.values(resolvedUrlKeys).map((urlKey) => [
+          urlKey,
+          initialSearchParams.get(urlKey) ?? null,
+        ]),
+      );
+    }
+  });
+
+  $effect(() => {
     const { state, hasChanged } = parseMap(
       keyMap,
       urlKeys,
@@ -129,35 +150,10 @@ export function useQueryStates<KeyMap extends UseQueryStatesKeysMap>(
       stateRef = state;
       internalState = state;
     }
-    queryRef = Object.fromEntries(
-      Object.values(resolvedUrlKeys).map((urlKey) => [
-        urlKey,
-        initialSearchParams.get(urlKey) ?? null,
-      ]),
-    );
-  }
-
-  effectDeps(() => {
-    const { state, hasChanged } = parseMap(
-      keyMap,
-      urlKeys,
-      initialSearchParams,
-      queryRef,
-      stateRef,
-    );
-    if (hasChanged) {
-      stateRef = state;
-      internalState = state;
-    }
-  }, [
-    () =>
-      Object.values(resolvedUrlKeys)
-        .map((key) => `${key}=${initialSearchParams.get(key)}`)
-        .join('&'),
-  ]);
+  });
 
   // Sync all hooks together & with external URL changes
-  effectDeps(() => {
+  $effect(() => {
     const updateInternalState = (state: V) => {
       debug('[nuq+ `%s`] updateInternalState %O', stateKeys, state);
       stateRef = state;
@@ -204,7 +200,7 @@ export function useQueryStates<KeyMap extends UseQueryStatesKeysMap>(
         emitter.off(urlKey, handlers[stateKey]);
       }
     };
-  }, [() => stateKeys, () => resolvedUrlKeys]);
+  });
 
   const update: SetValues<KeyMap> = (stateUpdater, callOptions = {}) => {
     const nullMap = Object.fromEntries(
