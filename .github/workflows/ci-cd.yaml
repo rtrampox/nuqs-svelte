@@ -1,0 +1,75 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - master
+      - next
+      - beta
+  pull_request:
+    types: [opened, reopened, synchronize]
+  workflow_dispatch:
+
+env:
+  FORCE_COLOR: 3 # Diplay chalk colors
+
+jobs:
+  lint:
+    name: Linting
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --ignore-scripts --frozen-lockfile --workspace-root
+      - name: Check monorepo with Sherif
+        run: pnpm run lint:sherif
+      - name: Check source code formatting
+        run: |
+          set +e # Allow Prettier to fail, but capture the error code
+          output=$(./node_modules/.bin/prettier --list-different ./packages/nuqs-svelte 2>&1)
+          exit_code=$?
+          set -e
+          if [ $exit_code -ne 0 ]; then
+            echo "$output" | while IFS= read -r file; do
+              echo "::warning file=$file::Prettier detected formatting issues in $file"
+            done
+            exit $exit_code
+          else
+            echo "No formatting issues found"
+          fi
+
+  cd:
+    name: Deployment
+    runs-on: ubuntu-24.04-arm
+    permissions:
+      contents: write # to be able to publish a GitHub release
+      issues: write # to be able to comment on released issues
+      pull-requests: write # to be able to comment on released pull requests
+      id-token: write # to enable use of OIDC for NPM provenance
+    needs:
+      - lint
+    if: ${{ github.ref_name == 'master' || github.ref_name == 'beta' }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      # Note: we do not use an external Turbo cache for publishing
+      # to prevent against possible cache collision attacks.
+      - name: Install dependencies
+        run: pnpm install --ignore-scripts --frozen-lockfile --filter nuqs-svelte...
+      - name: Build package
+        run: pnpm build --filter nuqs-svelte
+      - name: Semantic Release
+        run: ../../node_modules/.bin/semantic-release
+        working-directory: packages/nuqs-svelte
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
