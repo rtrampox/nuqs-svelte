@@ -40,9 +40,13 @@ npm install nuqs-svelte
 
 ## Adapters
 
-You will need to wrap your React component tree with an adapter for your framework. _(expand the appropriate section below)_
+You will need to wrap your Svelte component tree with an adapter. _(expand the appropriate section below)_
 
-<details><summary>▲ SvelteKit</summary>
+<details>
+  <summary>
+    <img src="https://avatars.githubusercontent.com/u/23617963?s=20&v=4" alt="SvelteKit" style="vertical-align: middle;" />
+  SvelteKit
+  </summary>
 
 > Supported Svelte versions: `>=5.0.0`.
 
