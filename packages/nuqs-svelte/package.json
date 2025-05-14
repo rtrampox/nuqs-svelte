@@ -67,6 +67,10 @@
     "./adapters/native": {
       "types": "./dist/adapters/native/index.d.ts",
       "svelte": "./dist/adapters/native/index.js"
+    },
+    "./adapters/custom": {
+      "types": "./dist/adapters/custom.d.ts",
+      "svelte": "./dist/adapters/custom.js"
     }
   },
   "peerDependencies": {
