@@ -11,9 +11,6 @@
     "type": "git",
     "url": "https://github.com/rtrampox/nuqs-svelte"
   },
-  "workspaces": [
-    "packages/*"
-  ],
   "scripts": {
     "prepare": "husky",
     "dev": "turbo dev",
