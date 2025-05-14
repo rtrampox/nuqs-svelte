@@ -211,7 +211,6 @@ export function useQueryState<T = string>(
     eq = (a, b) => a === b,
     defaultValue = undefined,
     clearOnDefault = true,
-    clearOnEmpty = false,
   }: Partial<UseQueryStateOptions<T>> & {
     defaultValue?: T;
   } = {
@@ -299,12 +298,6 @@ export function useQueryState<T = string>(
         "[nuqs `%s`] clearing query string because the value is equal to the default value",
         key,
       );
-
-      newValue = null;
-    }
-
-    if ((options.clearOnEmpty ?? clearOnEmpty) && newValue === "") {
-      debug("[nuqs `%s`] clearing query string because the value is empty", key);
 
       newValue = null;
     }

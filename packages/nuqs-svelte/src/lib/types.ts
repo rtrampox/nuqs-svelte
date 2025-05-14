@@ -61,18 +61,6 @@ export type Options = {
    * @default true
    */
   clearOnDefault?: boolean;
-
-  /**
-   * Clear the key-value pair from the URL query string when setting the state
-   * to the default value.
-   *
-   * Defaults to `false` as it would destroy the empty state of the query.
-   *
-   * Set it to `true` to clear the URL when the state is empty.
-   *
-   * @default false
-   */
-  clearOnEmpty?: boolean;
 };
 
 export type Nullable<T> = {
