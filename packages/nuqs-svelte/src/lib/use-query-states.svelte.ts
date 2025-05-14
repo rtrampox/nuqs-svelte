@@ -1,17 +1,17 @@
 // reactive values are required to be declared as let in Svelte
 /* eslint-disable prefer-const */
-import { useAdapter } from './adapters/index.svelte';
-import { debug } from './debug';
-import type { Parser } from './parsers';
-import { emitter, type CrossHookSyncPayload } from './sync';
-import type { Nullable, Options, UrlKeys } from './types';
+import { useAdapter } from "./adapters/index.svelte";
+import { debug } from "./debug";
+import type { Parser } from "./parsers";
+import { emitter, type CrossHookSyncPayload } from "./sync";
+import type { Nullable, Options, UrlKeys } from "./types";
 import {
   enqueueQueryStringUpdate,
   FLUSH_RATE_LIMIT_MS,
   getQueuedValue,
   scheduleFlushToURL,
-} from './update-queue';
-import { safeParse } from './utils';
+} from "./update-queue";
+import { safeParse } from "./utils";
 
 type KeyMapValue<Type> = Parser<Type> &
   Options & {
@@ -27,9 +27,9 @@ export type UseQueryStatesOptions<KeyMap extends UseQueryStatesKeysMap> = Option
 };
 
 export type Values<T extends UseQueryStatesKeysMap> = {
-  readonly [K in keyof T]: T[K]['defaultValue'] extends NonNullable<ReturnType<T[K]['parse']>>
-    ? NonNullable<ReturnType<T[K]['parse']>>
-    : ReturnType<T[K]['parse']> | null;
+  readonly [K in keyof T]: T[K]["defaultValue"] extends NonNullable<ReturnType<T[K]["parse"]>>
+    ? NonNullable<ReturnType<T[K]["parse"]>>
+    : ReturnType<T[K]["parse"]> | null;
 };
 type NullableValues<T extends UseQueryStatesKeysMap> = Nullable<Values<T>>;
 
@@ -89,7 +89,7 @@ const defaultUrlKeys = {};
 export function useQueryStates<KeyMap extends UseQueryStatesKeysMap>(
   keyMap: KeyMap,
   {
-    history = 'replace',
+    history = "replace",
     scroll = false,
     shallow = true,
     throttleMs = FLUSH_RATE_LIMIT_MS,
@@ -100,7 +100,7 @@ export function useQueryStates<KeyMap extends UseQueryStatesKeysMap>(
   type V = NullableValues<KeyMap>;
   const adapter = useAdapter();
 
-  const stateKeys = Object.keys(keyMap).join(',');
+  const stateKeys = Object.keys(keyMap).join(",");
   const resolvedUrlKeys = Object.fromEntries(
     Object.keys(keyMap).map((key) => [key, urlKeys[key] ?? key]),
   );
@@ -117,7 +117,7 @@ export function useQueryStates<KeyMap extends UseQueryStatesKeysMap>(
   let stateRef = $derived(internalState);
 
   $effect(() => {
-    if (Object.keys(queryRef).join('&') !== Object.values(resolvedUrlKeys).join('&')) {
+    if (Object.keys(queryRef).join("&") !== Object.values(resolvedUrlKeys).join("&")) {
       const { state, hasChanged } = parseMap(
         keyMap,
         urlKeys,
@@ -155,7 +155,7 @@ export function useQueryStates<KeyMap extends UseQueryStatesKeysMap>(
   // Sync all hooks together & with external URL changes
   $effect(() => {
     const updateInternalState = (state: V) => {
-      debug('[nuq+ `%s`] updateInternalState %O', stateKeys, state);
+      debug("[nuq+ `%s`] updateInternalState %O", stateKeys, state);
       stateRef = state;
       internalState = state;
     };
@@ -173,7 +173,7 @@ export function useQueryStates<KeyMap extends UseQueryStatesKeysMap>(
           };
           queryRef[urlKey] = query;
           debug(
-            '[nuq+ `%s`] Cross-hook key sync %s: %O (default: %O). Resolved: %O',
+            "[nuq+ `%s`] Cross-hook key sync %s: %O (default: %O). Resolved: %O",
             stateKeys,
             urlKey,
             state,
@@ -189,14 +189,14 @@ export function useQueryStates<KeyMap extends UseQueryStatesKeysMap>(
 
     for (const stateKey of Object.keys(keyMap)) {
       const urlKey = resolvedUrlKeys[stateKey]!;
-      debug('[nuq+ `%s`] Subscribing to sync for `%s`', stateKeys, urlKey);
+      debug("[nuq+ `%s`] Subscribing to sync for `%s`", stateKeys, urlKey);
       emitter.on(urlKey, handlers[stateKey]!);
     }
 
     return () => {
       for (const stateKey of Object.keys(keyMap)) {
         const urlKey = resolvedUrlKeys[stateKey]!;
-        debug('[nuq+ `%s`] Unsubscribing to sync for `%s`', stateKeys, urlKey);
+        debug("[nuq+ `%s`] Unsubscribing to sync for `%s`", stateKeys, urlKey);
         emitter.off(urlKey, handlers[stateKey]);
       }
     };
@@ -208,11 +208,11 @@ export function useQueryStates<KeyMap extends UseQueryStatesKeysMap>(
     ) as Nullable<KeyMap>;
 
     const newState: Partial<Nullable<KeyMap>> =
-      typeof stateUpdater === 'function'
+      typeof stateUpdater === "function"
         ? (stateUpdater(applyDefaultValues(stateRef, defaultValues)) ?? nullMap)
         : (stateUpdater ?? nullMap);
 
-    debug('[nuq+ `%s`] setState: %O', stateKeys, newState);
+    debug("[nuq+ `%s`] setState: %O", stateKeys, newState);
 
     for (let [stateKey, value] of Object.entries(newState)) {
       const parser = keyMap[stateKey];

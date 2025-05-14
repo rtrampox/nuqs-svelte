@@ -1,11 +1,11 @@
 <script lang="ts">
   import { parseAsBoolean, parseAsString } from "$lib/parsers";
-    import { useQueryStates } from "$lib/use-query-states.svelte";
+  import { useQueryStates } from "$lib/use-query-states.svelte";
 
   const queries = useQueryStates({
     q: parseAsString.withDefault("string-value"),
     switch: parseAsBoolean.withDefault(false).withOptions({
-      history: "push"
+      history: "push",
     }),
   });
 </script>
@@ -23,13 +23,14 @@
     class="rounded-md p-2 text-white ring ring-neutral-600 {queries.switch.current
       ? 'bg-green-500'
       : 'bg-neutral-900'}"
-    onclick={() => queries.switch.current = !queries.switch.current}>
+    onclick={() => (queries.switch.current = !queries.switch.current)}
+  >
     Toggle Switch
   </button>
 
   <button
     type="button"
-    class="rounded-md p-2 text-white ring ring-neutral-600 bg-red-500"
+    class="rounded-md bg-red-500 p-2 text-white ring ring-neutral-600"
     onclick={() => queries.set((prev) => ({ ...prev, q: null, switch: false }))}
   >
     Reset
