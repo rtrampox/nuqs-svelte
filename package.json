@@ -22,7 +22,6 @@
     "dev:native": "turbo -F native dev",
     "dev:web": "turbo -F web dev",
     "dev:server": "turbo -F server dev",
-    "sherif": "^1.5.0",
     "lint": "pnpm run -w --parallel --stream '/^lint:/'",
     "lint:prettier": "prettier --check ./packages/nuqs-svelte/src/**/*.{ts,svelte}",
     "lint:sherif": "sherif"
@@ -30,8 +29,9 @@
   "devDependencies": {
     "husky": "^9.1.7",
     "lint-staged": "^15.5.0",
-    "semantic-release": "^24.2.3",
     "prettier": "^3.4.2",
+    "semantic-release": "^24.2.3",
+    "sherif": "^1.5.0",
     "turbo": "^2.4.2"
   },
   "lint-staged": {
