@@ -1,6 +1,6 @@
+import { untrack } from "svelte";
 import { useAdapter } from "./adapters/index.svelte";
 import { debug } from "./debug";
-import { effectDeps } from "./effect.svelte";
 import type { Parser } from "./parsers";
 import { emitter, type CrossHookSyncPayload } from "./sync";
 import type { Options } from "./types";
@@ -240,16 +240,20 @@ export function useQueryState<T = string>(
 
   let queryState = $state<string | null>(initialSearchParams.get(key) ?? null);
 
-  effectDeps(() => {
+  $effect(() => {
+    // the query state needs to be untracked, as its value is updated when the internal state changes,
+    // and causes this effect to re-run, causing the internal state to be set to it's older value
+    const uQueryState = untrack(() => queryState);
+
     const query = initialSearchParams.get(key) ?? null;
 
     // parse the query string before comparing, as these values can be boolean, and any string would return true
     const state = query === null ? null : safeParse(parse, query, key);
-    if (state === queryState) {
+    if (state === uQueryState) {
       debug(
         "[nuqs `%s`] syncFromUseSearchParams, no change, prev: %O, new: %O",
         key,
-        queryState,
+        uQueryState,
         state,
       );
       return;
@@ -259,7 +263,7 @@ export function useQueryState<T = string>(
 
     internalState = state;
     queryState = query;
-  }, [() => initialSearchParams]);
+  });
 
   $effect(() => {
     const updateInternalState = ({ state, query }: CrossHookSyncPayload) => {

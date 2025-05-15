@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { goto } from "$app/navigation";
   import { parseAsBoolean, parseAsString } from "$lib/parsers";
   import { useQueryState } from "$lib/use-query-state.svelte";
 
@@ -17,9 +18,17 @@
 
   <button
     type="button"
-    class="rounded-md p-2 text-white ring ring-neutral-600 {switchState.current
-      ? 'bg-green-500'
-      : 'bg-neutral-900'}"
+    onclick={() => goto(`?switch=${!switchState.current}`)}
+    class="rounded-md p-2 text-white ring ring-neutral-600
+    {switchState.current ? 'bg-green-500' : 'bg-neutral-900'}"
+  >
+    Switch with goto
+  </button>
+
+  <button
+    type="button"
+    class="rounded-md p-2 text-white ring ring-neutral-600
+    {switchState.current ? 'bg-green-500' : 'bg-neutral-900'}"
     onclick={() => switchState.set((prev) => !prev)}
   >
     Toggle Switch
