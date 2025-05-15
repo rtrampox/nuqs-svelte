@@ -78,8 +78,8 @@ You will need to wrap your Svelte component tree with an adapter. _(expand the a
 </script>
 
 <h1>Hello, {name.current || "anonymous visitor"}!</h1>
-  <input bind:value={name} />
-<button onClick={() => setName(null)}>Clear</button>
+<input bind:value={name.current} />
+<button onclick={() => name.current = null}>Clear</button>
 ```
 
 `useQueryState` takes one required argument: the key to use in the query string.
