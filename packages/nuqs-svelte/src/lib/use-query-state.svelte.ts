@@ -238,7 +238,7 @@ export function useQueryState<T = string>(
     })(),
   );
 
-  let queryState = $state<string | null>(initialSearchParams.get(key) ?? null);
+  let queryState = $derived<string | null>(initialSearchParams.get(key) ?? null);
 
   $effect(() => {
     // the query state needs to be untracked, as its value is updated when the internal state changes,
