@@ -1,6 +1,6 @@
 <script lang="ts">
   import { browser } from "$app/environment";
-  import { goto, onNavigate, pushState, replaceState } from "$app/navigation";
+  import { goto, pushState, replaceState } from "$app/navigation";
   import { page } from "$app/state";
   import type { Snippet } from "svelte";
   import type { AdapterInterface } from "../types";
@@ -39,10 +39,6 @@
           window.scrollTo(0, 0);
         }
       }
-    },
-
-    onNavigate: (cb) => {
-      onNavigate(cb);
     },
 
     searchParams: () => page.url.searchParams,
