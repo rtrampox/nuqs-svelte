@@ -11,6 +11,8 @@
     children?: Snippet;
   };
 
+  let { children }: Props = $props();
+
   const adapter: AdapterInterface = {
     updateUrl: (search, options) => {
       const { history, scroll, shallow } = options;
@@ -23,13 +25,11 @@
           const fn = history === "replace" ? replaceState : pushState;
 
           fn(url, {
-            invalidateAll: false,
             replaceState: history === "replace",
             keepFocus: true,
           });
         } else {
           goto(url, {
-            invalidateAll: true,
             replaceState: history === "replace",
             keepFocus: true,
           });
@@ -44,8 +44,6 @@
     searchParams: () => page.url.searchParams,
     getSearchParamsSnapshot: () => page.url.searchParams,
   };
-
-  let { children }: Props = $props();
 </script>
 
 <NuqsContext {adapter}>
