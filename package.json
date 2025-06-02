@@ -31,7 +31,7 @@
     "prettier-plugin-tailwindcss": "^0.6.11",
     "semantic-release": "^24.2.3",
     "sherif": "^1.5.0",
-    "turbo": "^2.4.2"
+    "turbo": "^2.5.4"
   },
   "lint-staged": {
     "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": []
