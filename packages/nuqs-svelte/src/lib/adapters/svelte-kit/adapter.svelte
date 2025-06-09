@@ -32,6 +32,7 @@
           goto(url, {
             replaceState: history === "replace",
             keepFocus: true,
+            invalidateAll: true,
           });
         }
 
