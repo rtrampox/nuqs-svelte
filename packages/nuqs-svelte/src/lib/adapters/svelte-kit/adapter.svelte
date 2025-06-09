@@ -9,9 +9,19 @@
 
   type Props = {
     children?: Snippet;
+
+    /**
+     * A function that determines whether a navigation should trigger
+     * a full invalidation of all `load` functions.
+     *
+     * - `'deps'` (default): Relies on SvelteKit's built-in dependency tracking.
+     * - `'always'`: Always invalidates all load functions.
+     * - `(url: URL) => boolean`: A custom predicate function.
+     */
+    invalidation?: "deps" | "always" | ((url: URL) => boolean);
   };
 
-  let { children }: Props = $props();
+  let { children, invalidation = "deps" }: Props = $props();
 
   const adapter: AdapterInterface = {
     updateUrl: (search, options) => {
@@ -29,10 +39,17 @@
             keepFocus: true,
           });
         } else {
+          let shouldInvalidate = false;
+          if (invalidation === "always") {
+            shouldInvalidate = true;
+          } else if (typeof invalidation === "function") {
+            shouldInvalidate = invalidation(url);
+          }
+
           goto(url, {
             replaceState: history === "replace",
             keepFocus: true,
-            invalidateAll: true,
+            invalidateAll: shouldInvalidate,
           });
         }
 
