@@ -18,7 +18,7 @@
       const { history, scroll, shallow } = options;
 
       if (browser) {
-        const url = new URL(location.href);
+        const url = new URL(page.url);
         url.search = renderQueryString(search);
 
         if (shallow) {
@@ -41,8 +41,8 @@
       }
     },
 
-    searchParams: () => page.url.searchParams,
-    getSearchParamsSnapshot: () => page.url.searchParams,
+    searchParams: () => new URLSearchParams(page.url.searchParams),
+    getSearchParamsSnapshot: () => new URLSearchParams(page.url.searchParams),
   };
 </script>
 

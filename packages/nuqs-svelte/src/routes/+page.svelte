@@ -1,11 +1,15 @@
 <script lang="ts">
-  import { goto } from "$app/navigation";
   import { parseAsBoolean, parseAsString } from "$lib/parsers";
   import { useQueryState } from "$lib/use-query-state.svelte";
 
+  let { data } = $props();
+
   const query = useQueryState("q", parseAsString.withDefault("string-value"));
 
-  const switchState = useQueryState("switch", parseAsBoolean.withDefault(false));
+  const switchState = useQueryState(
+    "switch",
+    parseAsBoolean.withDefault(false).withOptions({ shallow: false }),
+  );
 </script>
 
 <div class="flex flex-col gap-2">
@@ -15,16 +19,6 @@
     placeholder="Search..."
     class="w-full rounded-md bg-neutral-900 p-2 text-white ring ring-neutral-600"
   />
-
-  <button
-    type="button"
-    onclick={() => goto(`?switch=${!switchState.current}`)}
-    class="rounded-md p-2 text-white ring ring-neutral-600
-    {switchState.current ? 'bg-green-500' : 'bg-neutral-900'}"
-  >
-    Switch with goto
-  </button>
-
   <button
     type="button"
     class="rounded-md p-2 text-white ring ring-neutral-600
@@ -33,4 +27,8 @@
   >
     Toggle Switch
   </button>
+
+  <p>Loader last updated: {data.time.toLocaleTimeString()}.</p>
+  <p>Query value from loader: {data.query}</p>
+  <p>Switch value from loader: {data.switch}</p>
 </div>
