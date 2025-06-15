@@ -202,10 +202,10 @@ export function useQueryState(key: string): UseQueryStateReturn<string, undefine
 export function useQueryState<T = string>(
   key: string,
   {
-    history = "replace",
-    shallow = true,
-    scroll = false,
-    throttleMs = FLUSH_RATE_LIMIT_MS,
+    history,
+    shallow,
+    scroll,
+    throttleMs,
     parse = (x) => x as unknown as T,
     serialize = String,
     eq = (a, b) => a === b,
@@ -214,10 +214,6 @@ export function useQueryState<T = string>(
   }: Partial<UseQueryStateOptions<T>> & {
     defaultValue?: T;
   } = {
-    history: "replace",
-    scroll: false,
-    shallow: true,
-    throttleMs: 50,
     parse: (x) => x as unknown as T,
     serialize: String,
     eq: (a, b) => a === b,
@@ -306,12 +302,15 @@ export function useQueryState<T = string>(
       newValue = null;
     }
 
+    const adapterOptions = adapter.options;
+
     const query = enqueueQueryStringUpdate(key, newValue, serialize, {
-      // Call-level options take precedence over hook declaration options
-      history: options.history ?? history,
-      shallow: options.shallow ?? shallow,
-      scroll: options.scroll ?? scroll,
-      throttleMs: options.throttleMs ?? throttleMs,
+      // Call-level options take precedence over hook declaration options that take precedence over adapter-level options
+      history: options.history ?? history ?? adapterOptions?.history ?? "replace",
+      shallow: options.shallow ?? shallow ?? adapterOptions?.shallow ?? true,
+      scroll: options.scroll ?? scroll ?? adapterOptions?.scroll ?? false,
+      throttleMs:
+        options.throttleMs ?? throttleMs ?? adapterOptions?.throttleMs ?? FLUSH_RATE_LIMIT_MS,
     });
 
     emitter.emit(key, { state: newValue, query });

@@ -1,6 +1,6 @@
 import type { Options } from "$lib/types";
 
-export type AdapterOptions = Pick<Options, "history" | "scroll" | "shallow">;
+export type AdapterOptions = Pick<Options, "history" | "scroll" | "shallow" | "throttleMs">;
 
 export type UpdateUrlFunction = (
   search: URLSearchParams,
@@ -18,4 +18,5 @@ export type AdapterInterface = {
   updateUrl: UpdateUrlFunction;
   getSearchParamsSnapshot?: () => URLSearchParams;
   rateLimitFactor?: number;
+  options?: AdapterOptions;
 };
