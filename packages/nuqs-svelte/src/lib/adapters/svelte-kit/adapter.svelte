@@ -22,7 +22,9 @@
   let url = $derived(new SvelteURL(page.url));
 
   const adapter: AdapterInterface = {
-    options,
+    get options() {
+      return options;
+    },
     updateUrl: (search, options) => {
       const { history, scroll, shallow } = options;
 
