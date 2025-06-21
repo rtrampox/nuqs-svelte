@@ -152,6 +152,7 @@ function flushUpdateQueue({
         history: options.history,
         scroll: options.scroll,
         shallow: options.shallow,
+        throttleMs: options.throttleMs,
       });
     });
     return [search, null];

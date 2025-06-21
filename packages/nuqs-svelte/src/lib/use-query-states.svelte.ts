@@ -89,10 +89,10 @@ const defaultUrlKeys = {};
 export function useQueryStates<KeyMap extends UseQueryStatesKeysMap>(
   keyMap: KeyMap,
   {
-    history = "replace",
-    scroll = false,
-    shallow = true,
-    throttleMs = FLUSH_RATE_LIMIT_MS,
+    history,
+    scroll,
+    shallow,
+    throttleMs,
     clearOnDefault = true,
     urlKeys = defaultUrlKeys,
   }: Partial<UseQueryStatesOptions<KeyMap>> = {},
@@ -228,13 +228,26 @@ export function useQueryStates<KeyMap extends UseQueryStatesKeysMap>(
       ) {
         value = null;
       }
+
+      const adapterOptions = adapter.options;
+
       const query = enqueueQueryStringUpdate(urlKey, value, parser.serialize ?? String, {
         // Call-level options take precedence over individual parser options
-        // which take precedence over global options
-        history: callOptions.history ?? parser.history ?? history,
-        shallow: callOptions.shallow ?? parser.shallow ?? shallow,
-        scroll: callOptions.scroll ?? parser.scroll ?? scroll,
-        throttleMs: callOptions.throttleMs ?? parser.throttleMs ?? throttleMs,
+        // which take precedence over global options that take precedence over adapter options
+        history:
+          callOptions.history ?? parser.history ?? history ?? adapterOptions?.history ?? "replace",
+
+        shallow:
+          callOptions.shallow ?? parser.shallow ?? shallow ?? adapterOptions?.shallow ?? true,
+
+        scroll: callOptions.scroll ?? parser.scroll ?? scroll ?? adapterOptions?.scroll ?? false,
+
+        throttleMs:
+          callOptions.throttleMs ??
+          parser.throttleMs ??
+          throttleMs ??
+          adapterOptions?.throttleMs ??
+          FLUSH_RATE_LIMIT_MS,
       });
       emitter.emit(urlKey, { state: value, query });
     }
