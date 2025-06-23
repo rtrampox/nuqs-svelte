@@ -28,7 +28,7 @@
     "lint-staged": "^16.0.0",
     "prettier": "^3.4.2",
     "prettier-plugin-svelte": "^3.3.3",
-    "prettier-plugin-tailwindcss": "^0.6.11",
+    "prettier-plugin-tailwindcss": "^0.6.13",
     "semantic-release": "^24.2.3",
     "sherif": "^1.5.0",
     "turbo": "^2.5.4"
