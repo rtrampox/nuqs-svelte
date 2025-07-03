@@ -6,7 +6,7 @@
   import type { AdapterInterface, AdapterOptions } from "../types";
   import NuqsContext from "../NuqsContext.svelte";
   import { renderQueryString } from "$lib/url-encoding";
-  import { SvelteURL } from "svelte/reactivity";
+  import { SvelteURL, SvelteURLSearchParams } from "svelte/reactivity";
 
   type Props = {
     children?: Snippet;
@@ -51,8 +51,8 @@
       }
     },
 
-    searchParams: () => new URLSearchParams(url.searchParams),
-    getSearchParamsSnapshot: () => new URLSearchParams(url.searchParams),
+    searchParams: () => new SvelteURLSearchParams(page.url.searchParams),
+    getSearchParamsSnapshot: () => new URLSearchParams(page.url.searchParams),
   };
 </script>
 

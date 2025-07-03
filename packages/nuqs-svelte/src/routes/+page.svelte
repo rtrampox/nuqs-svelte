@@ -28,6 +28,10 @@
     Toggle Switch
   </button>
 
+  <a href="/" class="rounded-md bg-neutral-900 p-2 text-center text-white ring ring-neutral-600"
+    >Reset</a
+  >
+
   <p>Loader last updated: {data.time.toLocaleTimeString()}.</p>
   <p>Query value from loader: {data.query}</p>
   <p>Switch value from loader: {data.switch}</p>

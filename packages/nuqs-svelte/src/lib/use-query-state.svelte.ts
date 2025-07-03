@@ -1,4 +1,3 @@
-import { untrack } from "svelte";
 import { useAdapter } from "./adapters/index.svelte";
 import { debug } from "./debug";
 import type { Parser } from "./parsers";
@@ -234,22 +233,20 @@ export function useQueryState<T = string>(
     })(),
   );
 
-  let queryState = $derived<string | null>(initialSearchParams.get(key) ?? null);
+  // this state should represent the previous query string value
+  // so that we can compare it with the current value
+  let queryState = initialSearchParams.get(key) ?? null;
 
   $effect(() => {
-    // the query state needs to be untracked, as its value is updated when the internal state changes,
-    // and causes this effect to re-run, causing the internal state to be set to it's older value
-    const uQueryState = untrack(() => queryState);
-
     const query = initialSearchParams.get(key) ?? null;
 
     // parse the query string before comparing, as these values can be boolean, and any string would return true
     const state = query === null ? null : safeParse(parse, query, key);
-    if (state === uQueryState) {
+    if (state === queryState) {
       debug(
         "[nuqs `%s`] syncFromUseSearchParams, no change, prev: %O, new: %O",
         key,
-        uQueryState,
+        queryState,
         state,
       );
       return;
