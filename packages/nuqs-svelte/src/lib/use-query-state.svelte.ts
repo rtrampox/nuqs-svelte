@@ -221,7 +221,7 @@ export function useQueryState<T = string>(
   },
 ): UseQueryStateReturn<NonNullable<ReturnType<typeof parse>>, typeof defaultValue> {
   const adapter = useAdapter();
-  const initialSearchParams = $derived(adapter.searchParams());
+  let initialSearchParams = $derived(adapter.searchParams());
 
   let internalState = $state<T | null>(
     (() => {
