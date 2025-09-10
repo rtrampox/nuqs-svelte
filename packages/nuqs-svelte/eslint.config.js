@@ -6,10 +6,11 @@ import globals from "globals";
 import { fileURLToPath } from "node:url";
 import ts from "typescript-eslint";
 import svelteConfig from "./svelte.config.js";
+import { defineConfig } from "eslint/config";
 
 const gitignorePath = fileURLToPath(new URL("./.gitignore", import.meta.url));
 
-export default ts.config(
+export default defineConfig(
   includeIgnoreFile(gitignorePath),
   js.configs.recommended,
   ...ts.configs.recommended,
@@ -35,6 +36,10 @@ export default ts.config(
         parser: ts.parser,
         svelteConfig,
       },
+    },
+    rules: {
+      "prefer-const": "off",
+      "svelte/no-navigation-without-resolve": "off",
     },
   },
 );
