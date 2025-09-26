@@ -98,7 +98,7 @@
     "@types/node": "^24.0.7",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
-    "eslint-plugin-svelte": "^3.9.0",
+    "eslint-plugin-svelte": "^3.12.4",
     "globals": "^16.0.0",
     "jsdom": "^26.0.0",
     "prettier": "^3.4.2",
