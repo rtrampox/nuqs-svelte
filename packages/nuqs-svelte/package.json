@@ -104,7 +104,7 @@
     "prettier": "^3.4.2",
     "prettier-plugin-svelte": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
-    "publint": "^0.3.2",
+    "publint": "^0.3.14",
     "semantic-release": "^24.2.3",
     "svelte": "^5.39.6",
     "svelte-check": "^4.2.0",
