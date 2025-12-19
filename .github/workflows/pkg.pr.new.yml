@@ -47,7 +47,7 @@ jobs:
           install-args: "--filter ./packages/*"
 
       - name: Build package
-        run: bun turbo build --filter nuqs-svelte
+        run: bun run turbo build --filter nuqs-svelte
 
       - name: Set package version
         working-directory: packages/nuqs-svelte
