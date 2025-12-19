@@ -56,8 +56,6 @@ jobs:
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
       - uses: ./.github/setup
-        with:
-          install-args: "--filter ./packages/*"
 
       - name: Build package
         run: bun run turbo build --filter nuqs-svelte
