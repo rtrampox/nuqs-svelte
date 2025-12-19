@@ -56,4 +56,4 @@ jobs:
           echo "::notice title=Version::0.0.0-preview.${{ github.event.pull_request.head.sha }}"
 
       - name: Publish to pkg.pr.new
-        run: bun x pkg-pr-new publish --compact './packages/nuqs-svelte' --no-template --packageManager=bun --bun
+        run: bun x pkg-pr-new publish --compact './packages/nuqs-svelte' --no-template
