@@ -11,23 +11,25 @@ on:
   workflow_dispatch:
 
 env:
-  FORCE_COLOR: 3 # Diplay chalk colors
+  FORCE_COLOR: 3
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  id-token: write
 
 jobs:
   lint:
     name: Linting
     runs-on: ubuntu-24.04-arm
+
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
-      - uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061
-      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
-        with:
-          node-version-file: .node-version
-          cache: pnpm
-      - name: Install dependencies
-        run: pnpm install --ignore-scripts --frozen-lockfile --workspace-root
+      - uses: ./.github/setup
+
       - name: Check monorepo with Sherif
-        run: pnpm run lint:sherif
+        run: bun run lint:sherif
       - name: Check source code formatting
         run: |
           set +e # Allow Prettier to fail, but capture the error code
@@ -46,30 +48,20 @@ jobs:
   cd:
     name: Deployment
     runs-on: ubuntu-24.04-arm
-    permissions:
-      contents: write # to be able to publish a GitHub release
-      issues: write # to be able to comment on released issues
-      pull-requests: write # to be able to comment on released pull requests
-      id-token: write # to enable use of OIDC for NPM provenance
     needs:
       - lint
+
     if: ${{ github.ref_name == 'main' || github.ref_name == 'beta' }}
+
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
-      - uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061
-      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
+      - uses: ./.github/setup
         with:
-          node-version-file: .node-version
-          cache: pnpm
-      # Note: we do not use an external Turbo cache for publishing
-      # to prevent against possible cache collision attacks.
-      - name: Install dependencies
-        run: pnpm install --ignore-scripts --frozen-lockfile --filter nuqs-svelte...
+          install-args: "--filter nuqs-svelte..."
+
       - name: Build package
-        run: pnpm build --filter nuqs-svelte
+        run: bun turbo build --filter nuqs-svelte
+
       - name: Semantic Release
         run: ../../node_modules/.bin/semantic-release
         working-directory: packages/nuqs-svelte
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -8,15 +8,17 @@ on:
 jobs:
   check-changes:
     name: Check for relevant changes to deploy
+    runs-on: ubuntu-24.04-arm
+    outputs:
+      enable: ${{ steps.check-for-changes.outputs.enable }}
+
     if: |
       github.event.review.state == 'APPROVED' ||
       github.event.pull_request.author_association == 'OWNER' ||
       github.event.pull_request.author_association == 'MEMBER' ||
       github.event.pull_request.author_association == 'COLLABORATOR' ||
       contains(github.event.pull_request.labels.*.name, 'deploy:preview')
-    runs-on: ubuntu-24.04-arm
-    outputs:
-      enable: ${{ steps.check-for-changes.outputs.enable }}
+
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
         with:
@@ -34,25 +36,26 @@ jobs:
   deploy-preview:
     name: Deploy to pkg.pr.new
     needs: check-changes
-    if: needs.check-changes.outputs.enable == 'true'
     runs-on: ubuntu-24.04-arm
+
+    if: needs.check-changes.outputs.enable == 'true'
+
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
-      - uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061
-      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
+      - uses: ./.github/setup
         with:
-          node-version-file: .node-version
-          cache: pnpm
-      - name: Install dependencies
-        run: pnpm install
+          install-args: "--filter nuqs-svelte..."
+
       - name: Build package
-        run: pnpm build --filter nuqs-svelte
+        run: bun turbo build --filter nuqs-svelte
+
       - name: Set package version
-        run: |
-          pnpm pkg set version=0.0.0-preview.${{ github.event.pull_request.head.sha }}
-          echo "::notice title=Install (PR)::pnpm add https://pkg.pr.new/nuqs-svelte@${{ github.event.pull_request.number }}"
-          echo "::notice title=Install (SHA)::pnpm add https://pkg.pr.new/nuqs-svelte@${{ github.event.pull_request.head.sha }}"
-          echo "::notice title=Version::0.0.0-preview.${{ github.event.pull_request.head.sha }}"
         working-directory: packages/nuqs-svelte
+        run: |
+          bun pm pkg set version=0.0.0-preview.${{ github.event.pull_request.head.sha }}
+          echo "::notice title=Install (PR)::bun add https://pkg.pr.new/nuqs-svelte@${{ github.event.pull_request.number }}"
+          echo "::notice title=Install (SHA)::bun add https://pkg.pr.new/nuqs-svelte@${{ github.event.pull_request.head.sha }}"
+          echo "::notice title=Version::0.0.0-preview.${{ github.event.pull_request.head.sha }}"
+
       - name: Publish to pkg.pr.new
-        run: pnpx pkg-pr-new publish --compact './packages/nuqs-svelte' --no-template --packageManager=pnpm --pnpm
+        run: bun x pkg-pr-new publish --compact './packages/nuqs-svelte' --no-template --packageManager=bun --bun
