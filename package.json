@@ -29,7 +29,7 @@
     "prettier": "^3.4.2",
     "prettier-plugin-svelte": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.7.2",
-    "semantic-release": "^24.2.3",
+    "semantic-release": "^25.0.2",
     "sherif": "^1.6.1",
     "turbo": "^2.7.4"
   },
