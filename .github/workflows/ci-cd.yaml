@@ -10,6 +10,12 @@ on:
     types: [opened, reopened, synchronize]
   workflow_dispatch:
 
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  id-token: write
+
 env:
   FORCE_COLOR: 3 # Diplay chalk colors
 
