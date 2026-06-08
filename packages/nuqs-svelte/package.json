@@ -102,7 +102,7 @@
     "globals": "^17.0.0",
     "jsdom": "^29.0.2",
     "prettier": "^3.4.2",
-    "prettier-plugin-svelte": "^3.3.3",
+    "prettier-plugin-svelte": "^4.1.0",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "publint": "^0.3.2",
     "semantic-release": "^25.0.2",

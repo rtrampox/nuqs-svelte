@@ -27,7 +27,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.2.3",
     "prettier": "^3.4.2",
-    "prettier-plugin-svelte": "^3.3.3",
+    "prettier-plugin-svelte": "^4.1.0",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "semantic-release": "^25.0.2",
     "sherif": "^1.6.1",
